@@ -1,10 +1,24 @@
 import { Beach } from '@src/models/beach';
+import { User } from '@src/models/user';
+import AuthService from '@src/services/auth';
 
 describe('Beaches functional tests', () => {
-  beforeAll(async () => await Beach.deleteMany());
+  // beforeAll(async () => await Beach.deleteMany());
+  const defaultUser = {
+    name: 'John Doe',
+    email: '1234',
+    password: '1234',
+  };
 
+  let token: string;
+  //   beforeAll(async () => Beach.deleteMany({}));
+  beforeEach(async () => {
+    await Beach.deleteMany({});
+    await User.deleteMany({});
+    const user = await new User(defaultUser).save();
+    token = AuthService.generateToken(user.toJSON());
+  });
   describe('When creating a beach', () => {
-    
     it('should create a beach with success', async () => {
       const newBeach = {
         lat: -33.792726,
@@ -13,7 +27,11 @@ describe('Beaches functional tests', () => {
         position: 'E',
       };
 
-      const response = await global.testRequest.post('/beaches').send(newBeach);
+      const response = await await global.testRequest
+        .post('/beaches')
+        .set({ 'x-access-token': token })
+        .send(newBeach);
+
       expect(response.status).toBe(201);
       expect(response.body).toEqual(expect.objectContaining(newBeach));
     });
@@ -27,14 +45,18 @@ describe('Beaches functional tests', () => {
         user: 'some-id',
       };
 
-      const response = await global.testRequest.post('/beaches').send(newBeach);
+      const response = await global.testRequest
+        .post('/beaches')
+        .set({ 'x-access-token': token })
+        .send(newBeach);
 
-      expect(response.status).toBe(newBeach);
+      expect(response.status).toBe(422);
       expect(response.body).toEqual({
-        error:
+        code: 422,
+        error: 'Unprocessable Entity',
+        message:
           'Beach validation failed: lat: Cast to Number failed for value "invalid_string" at path "lat"',
       });
     });
   });
 });
- 

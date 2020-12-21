@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { Controller, Post } from '@overnightjs/core';
-import mongoose from 'mongoose';
 import { User } from '@src/models/user';
 import { BaseController } from '.';
 import AuthService from '@src/services/auth';
@@ -20,19 +19,25 @@ export class UsersController extends BaseController {
   }
 
   @Post('authenticate')
-  public async authenticate(req: Request, res: Response): Promise<void> {
+  public async authenticate(req: Request, res: Response): Promise<Response | undefined> {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (!user) {
-      return;
+      return this.sendErrorResponse(res,{
+        code: 401 ,
+        message: 'User not found.',
+      });
     }
 
-    if (!(await AuthService.comparePassword(password, user.password ))) {
-      return;
+    if (!(await AuthService.comparePassword(password, user.password))) {
+      return this.sendErrorResponse(res,{
+        code: 401,
+        message: 'Password does not match.',
+      });
     }
 
     const token = AuthService.generateToken(user.toJSON());
-    res.status(200).send({ token: token });
+    return res.status(200).send({ ...user.toJSON(), ...{ token } });
   }
 }

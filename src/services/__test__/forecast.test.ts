@@ -104,7 +104,7 @@ describe('Forecast Service', () => {
         lng: 151.289824,
         name: 'Manly',
         position: BeachPositiion.E,
-        user: 'some-id',
+        user: 'fake-id',
       },
     ];
 

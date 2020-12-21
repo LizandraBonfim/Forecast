@@ -1,4 +1,5 @@
 import { CUSTOM_VALIDATION } from '@src/models/user';
+import ApiError, { APIError } from '@src/util/errors/api-error';
 import { Response } from 'express';
 import mongoose from 'mongoose';
 
@@ -12,9 +13,9 @@ export abstract class BaseController {
 
       return res
         .status(clientErrors.code)
-        .send({ code: clientErrors.code, error: clientErrors.error });
+        .send(ApiError.format({ code: clientErrors.code, message: clientErrors.error }));
     } else {
-      return res.status(500).send({ code: 500, error: 'Internal Server Erro' });
+      return res.status(500).send(ApiError.format({ code: 500, message: 'Internal Server Erro' }));
     }
   }
 
@@ -29,5 +30,9 @@ export abstract class BaseController {
       return { code: 409, error: error.message };
     }
     return { code: 422, error: error.message };
+  }
+
+  protected sendErrorResponse(res: Response, apiError: APIError): Response {
+    return res.status(apiError.code).send(ApiError.format(apiError));
   }
 }
