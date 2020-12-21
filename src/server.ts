@@ -27,7 +27,6 @@ export class SetupServer extends Server {
         logger,
       })
       );
-    //add cors
     this.app.use(cors);
 
     // this.app.use(cors({ origin: '*' }));
