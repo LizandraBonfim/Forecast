@@ -26,7 +26,7 @@ export class SetupServer extends Server {
       expressPino({
         logger,
       })
-      );
+    );
     this.app.use(cors);
 
     // this.app.use(cors({ origin: '*' }));
@@ -38,7 +38,7 @@ export class SetupServer extends Server {
     const usersController = new UsersController();
     this.addControllers([
       forecastController,
-      beachesController,  
+      beachesController,
       usersController,
     ]);
   }
