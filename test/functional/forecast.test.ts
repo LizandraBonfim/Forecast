@@ -22,7 +22,7 @@ describe('Beach forecast functional tests', () => {
       lng: 151.289824,
       name: 'Manly',
       position: GeoPositiion.E,
-      user: user._id,
+      userId: user._id,
     };
     await new Beach(defaultBeach).save();
     token = AuthService.generateToken(user.toJSON());
