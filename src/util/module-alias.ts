@@ -1,7 +1,6 @@
 import * as path from 'path';
 import moduleAlias from 'module-alias';
 
-console.log('__dirname', __dirname)
 const files = path.resolve(__dirname, '../..');
 
 

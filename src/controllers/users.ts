@@ -53,7 +53,7 @@ export class UsersController extends BaseController {
     if (!user) {
       return this.sendErrorResponse(res, {
         code: 404,
-        message: 'user not found',
+        message: 'User not found!',
       });
     }
     return res.send({ user });
